@@ -2,38 +2,31 @@
 
 --------------------------------------------------
 
-### Traduction du jeu Encased
+# 🇮🇹 Encased - Traduzione Italiana
 
- Amélioration de la traduction française, l'originale conçue par GlobaLoc GmbH est imparfaite et remplie d'erreurs.
+Progetto per la traduzione completa e la revisione della localizzazione italiana di **Encased**.
 
- - Tous les dialogues traduits
- - Toutes les scènes de fin traduites
- - Modification de certaines traductions baclées
- - Correction des balises nr et /nr (manquantes ou doublons)
- - Ajout de tous les sauts de ligne manquants (plusieurs milliers)
- - Modification des couleurs par leur équivalent Ambre, Ébène, Azur, Ivoire et Argent
- - Modification du sous-titrage de l'intro
- - Modification des erreurs dans les menus
+## Crediti e Ringraziamenti
+Questo progetto è basato sui tool di estrazione e compilazione sviluppati originariamente da **[DocteurKain](https://github.com/DocteurKain/Encased)**. Un ringraziamento speciale per aver reso possibile l'accesso ai file di gioco.
 
---------------------------------------------------
+## Obiettivi del Progetto
+L'obiettivo è fornire una traduzione italiana di alta qualità, correggendo le imperfezioni e migliorando l'esperienza di gioco rispetto alle versioni originali.
+- [ ] Traduzione di tutti i dialoghi e dei testi di gioco.
+- [ ] Traduzione di tutte le scene finali (diapositive).
+- [ ] Revisione dei menu e dell'interfaccia utente.
+- [ ] Correzione dei tag di formattazione (`<nr>`, `{0}`, ecc.) per garantire la corretta visualizzazione del testo.
+- [ ] Inserimento dei salti di riga mancanti per evitare testi fuori dai margini.
+- [ ] Adattamento stilistico dei nomi (es. colori delle ali e delle fazioni).
+- [ ] Traduzione e sottotitolaggio del filmato introduttivo.
 
-### Installation
+## Installazione
+1. Scaricare l'ultima versione del file `It.locale`.
+2. Copiare il file nella cartella: 
+   `{cartella_del_gioco}\Encased_Data\StreamingAssets\Localization`
+3. **Nota:** Se il gioco non permette di selezionare l'italiano, rinominare il file in `En.locale` (dopo aver fatto un backup dell'originale) per sostituire la lingua inglese.
 
- Onglet Releases
- 
- Télécharger la dernière version et copier le fichier dans
- {répertoire_du_jeu}\Encased_Data\StreamingAssets\Localization
-
---------------------------------------------------
-
-### Modification
-
- Les sources de la librairie pour exporter/importer les fichiers de localisation est disponible.
-
- Tests sur les fichiers anglais, français, allemand, espagnol, russe, chinois et japonais.
-
- Utiliser la classe EncasedLib/Services/LocaleService pour charger/sauvegarder les fichiers Locale.
-
+## Note Tecniche
+I sorgenti della libreria (`EncasedLib`) sono inclusi per permettere l'esportazione e l'importazione dei file di localizzazione tramite la classe `LocaleService`.
  Structure des fichiers de langue répertoires /docs
 
 --------------------------------------------------
