@@ -27,11 +27,20 @@ namespace EncasedBoy
                 // Converte tutto in un formato JSON leggibile
                 var json = JsonConvert.SerializeObject(locale, Formatting.Indented);
                 
-                // Salva il file
-                File.WriteAllText(outputFile, json);
+                // Salva il file solo se non esiste già
+                if (!File.Exists(outputFile))
+                {
+                    File.WriteAllText(outputFile, json);
+                    Console.WriteLine($"[INFO] File creato: {outputFile}");
+                    Console.WriteLine("SUCCESSO! Creato file: " + outputFile);
+                    Console.WriteLine("Ora puoi scaricare En_Traduzione.json dalla colonna di sinistra.");
+                }
+                else
+                {
+                    Console.WriteLine($"[SICUREZZA] Il file {outputFile} esiste già. Sovrascrittura annullata per proteggere il tuo lavoro!");
+                }
 
-                Console.WriteLine("SUCCESSO! Creato file: " + outputFile);
-                Console.WriteLine("Ora puoi scaricare En_Traduzione.json dalla colonna di sinistra.");
+
             }
             catch (Exception ex)
             {
