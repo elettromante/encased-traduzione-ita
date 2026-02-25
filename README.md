@@ -1,8 +1,7 @@
 ![](https://repository-images.githubusercontent.com/415415940/7f433788-c8c6-4082-9ff6-4240814af2c3)
 
 --------------------------------------------------
-
-# 🇮🇹 Encased - Traduzione Italiana
+# <img src="https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/it.svg" width="30"> Encased - Traduzione Italiana
 
 Progetto per la traduzione completa e la revisione della localizzazione italiana di **Encased**.
 
