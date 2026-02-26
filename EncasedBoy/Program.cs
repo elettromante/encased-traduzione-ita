@@ -12,61 +12,121 @@ namespace EncasedBoy
         {
             try 
             {
-                // Definiamo i percorsi dei file
-                string gameFileBase = "En.locale";
-                string jsonTranslation = "En_Traduzione.json";
-                string finalItalianFile = "IT.locale";
+                // 1. Identificazione Lingua (Default: En)
+                string rawInput = args.FirstOrDefault(a => !a.StartsWith("-")) ?? "En";
+                string langCode = char.ToUpper(rawInput[0]) + rawInput.Substring(1).ToLower();
 
-                // Controlliamo se l'utente ha passato il parametro di estrazione
-                bool forceExtract = args.Contains("--extract_json");
+                // 2. Configurazione Cartelle
+                string inputFolder = "Locale";           // File originali
+                string outputJsonFolder = "Extracted_Json"; // I tuoi JSON
+                string packedFolder = "Packed";          // File generati per il gioco
+                
+                // Creazione cartelle se mancano
+                if (!Directory.Exists(inputFolder)) Directory.CreateDirectory(inputFolder);
+                if (!Directory.Exists(outputJsonFolder)) Directory.CreateDirectory(outputJsonFolder);
+                if (!Directory.Exists(packedFolder)) Directory.CreateDirectory(packedFolder);
 
-                if (forceExtract)
+                // 3. Percorsi File
+                string originalLocale = Path.Combine(inputFolder, $"{langCode}.locale");
+                string jsonFile = Path.Combine(outputJsonFolder, $"{langCode}_Traduzione.json");
+                string packedLocale = Path.Combine(packedFolder, $"{langCode}.locale");
+
+                bool isExtracting = args.Contains("--extract_json");
+                bool isPacking = args.Contains("--pack");
+                bool isUpdating = args.Contains("--update");
+
+                if (isExtracting)
                 {
-                    Console.WriteLine("--- MODALITÀ ESTRAZIONE FORZATA ---");
+                    Console.WriteLine($"--- ESTRAZIONE [{langCode}] ---");
                     
-                    // Protezione: anche con il parametro, chiediamo se il file esiste già
-                    if (File.Exists(jsonTranslation))
+                    if (File.Exists(jsonFile))
                     {
-                        Console.WriteLine($"ATTENZIONE: {jsonTranslation} esiste già!");
-                        Console.WriteLine("Per sicurezza, rinominalo o eliminalo manualmente se vuoi davvero ri-estrarlo.");
+                        Console.WriteLine($"STOP: {jsonFile} esiste già. Spostalo o nominalo diversamente per ri-estrarre.");
                         return;
                     }
 
-                    if (!File.Exists(gameFileBase))
+                    if (!File.Exists(originalLocale))
                     {
-                        Console.WriteLine($"ERRORE: Non trovo {gameFileBase} da cui estrarre.");
+                        Console.WriteLine($"ERRORE: Non trovo il file originale {originalLocale}");
                         return;
                     }
 
-                    var locale = FileService.FileToLocale(gameFileBase);
+                    var locale = FileService.FileToLocale(originalLocale);
                     var json = JsonConvert.SerializeObject(locale, Formatting.Indented);
-                    File.WriteAllText(jsonTranslation, json);
+                    File.WriteAllText(jsonFile, json);
                     
-                    Console.WriteLine($"SUCCESSO: Creato {jsonTranslation}. Ora puoi iniziare a tradurre!");
+                    Console.WriteLine($"SUCCESSO: Creato {jsonFile}");
+                }
+                else if (isPacking)
+                {
+                    Console.WriteLine($"--- PACKING [{langCode}] ---");
+
+                    if (!File.Exists(jsonFile))
+                    {
+                        Console.WriteLine($"ERRORE: Non trovo {jsonFile} da compilare.");
+                        return;
+                    }
+
+                    Console.WriteLine($"Leggendo {jsonFile}...");
+                    string jsonContent = File.ReadAllText(jsonFile);
+                    var locale = JsonConvert.DeserializeObject<EncasedLib.Models.Locale>(jsonContent);
+
+                    // Scrive il file finale nella cartella Packed/
+                    FileService.LocaleToFile(locale, packedLocale);
+
+                    Console.WriteLine("--------------------------------------------------");
+                    Console.WriteLine($"SUCCESSO: {packedLocale} creato correttamente!");
+                    Console.WriteLine("--------------------------------------------------");
+                }
+                else if (isUpdating)
+                {
+                    string patchFile = "patch.txt";
+                    
+                    if (!File.Exists(patchFile))
+                    {
+                        Console.WriteLine($"ERRORE: Manca il file {patchFile} nella cartella del progetto.");
+                        return;
+                    }
+
+                    Console.WriteLine($"--- AGGIORNAMENTO TRADUZIONE [{langCode}] ---");
+                    if (!File.Exists(jsonFile))
+                    {
+                        Console.WriteLine($"ERRORE: Non trovo {jsonFile}. Devi prima estrarlo o crearne una copia.");
+                        return;
+                    }
+
+                    string jsonContent = File.ReadAllText(jsonFile);
+                    var locale = JsonConvert.DeserializeObject<EncasedLib.Models.Locale>(jsonContent);
+                    var patchLines = File.ReadAllLines(patchFile);
+                    int count = 0;
+
+                    foreach (var line in patchLines)
+                    {
+                        var parts = line.Split('|');
+                        if (parts.Length < 2) continue;
+
+                        string id = parts[0].Trim();
+                        string newText = parts[1].Trim();
+
+                        var entry = locale.Lines.FirstOrDefault(l => l.Address == id);
+                        if (entry != null)
+                        {
+                            entry.Text = newText;
+                            count++;
+                        }
+                    }
+
+                    File.WriteAllText(jsonFile, JsonConvert.SerializeObject(locale, Formatting.Indented));
+                    Console.WriteLine("--------------------------------------------------");
+                    Console.WriteLine($"SUCCESSO: Aggiornate {count} stringhe in {jsonFile}");
+                    Console.WriteLine("--------------------------------------------------");
                 }
                 else
                 {
-                    // MODALITÀ DEFAULT: Crea IT.locale partendo dal JSON
-                    Console.WriteLine("--- MODALITÀ GENERAZIONE IT.LOCALE ---");
-
-                    if (!File.Exists(jsonTranslation))
-                    {
-                        Console.WriteLine($"ERRORE: Non trovo {jsonTranslation}.");
-                        Console.WriteLine("Se è la prima volta, usa: dotnet run --project EncasedBoy -- --extract_json");
-                        return;
-                    }
-
-                    Console.WriteLine("Lettura traduzioni in corso...");
-                    string jsonContent = File.ReadAllText(jsonTranslation);
-                    var locale = JsonConvert.DeserializeObject<EncasedLib.Models.Locale>(jsonContent);
-
-                    // Generiamo IT.locale invece di sovrascrivere l'originale
-                    FileService.LocaleToFile(locale, finalItalianFile);
-
-                    Console.WriteLine("--------------------------------------------------");
-                    Console.WriteLine($"COMPILAZIONE COMPLETATA: {finalItalianFile} creato!");
-                    Console.WriteLine("Puoi usarlo nel gioco rinominandolo o inserendolo nella cartella locale.");
-                    Console.WriteLine("--------------------------------------------------");
+                    Console.WriteLine("Comandi disponibili:");
+                    Console.WriteLine($" - dotnet run -- {langCode} --extract_json  (Estrae da Locale/ a Extracted_Json/)");
+                    Console.WriteLine($" - dotnet run -- {langCode} --pack          (Compila da Extracted_Json/ a Packed/)");
+                    Console.WriteLine($" - dotnet run -- {langCode} --update_it     (Applica traduzioni da patch_it.txt)");
                 }
             }
             catch (Exception ex)

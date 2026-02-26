@@ -1,5 +1,20 @@
 # Changelog - EncasedBoy (fork di Encased 1.3.1517.1645 di DocteurKain)
 
+# Changelog - EncasedBoy
+
+## [26-02-2026] - Refactoring Sistema di Patching e Documentazione
+
+### Aggiunte
+- **Comando `--update`**: Funzione per iniettare traduzioni massive nel JSON tramite file esterno.
+- **Supporto `patch.txt`**: Implementata lettura del file di patch universale (ID|Testo).
+
+### Modifiche
+- **Flessibilità lingua**: Il sistema ora permette di applicare la stessa patch a diversi file di lingua (`En`, `Es`, `Fr`) per test di compatibilità.
+
+### Correzioni
+- Ottimizzata la gestione dei percorsi file per prevenire errori di puntamento durante le fasi di aggiornamento e packing.
+
+
 ## [1.1.0] - 25-02-2026
 
 ### Aggiunto

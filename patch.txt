@@ -1,0 +1,25 @@
+CD887E|Nuova Partita
+CD887F|Carica Partita
+CD8880|Impostazioni
+CD8881|Autori
+CD8882|Esci
+CD8883|Salva Partita
+CD8884|Continua
+CD8885|Torna al Menu Principale
+CD8886|Indietro
+CD8887|Applica
+CD8888|Predefiniti
+CD8889|Audio
+CD888A|Video
+CD888B|Comandi
+CD888C|Gioco
+CD888D|Difficoltà
+CD888E|Lingua
+CD888F|Master
+CD8890|Musica
+CD8891|Effetti
+CD8892|Interfaccia
+CD8893|Dialoghi
+CD8894|Risoluzione
+CD8895|Schermo Intero
+CD8896|Sincronizzazione Verticale (VSync)
